@@ -1,14 +1,35 @@
 'use client'
 
-import { courses } from '@/db/schema'
+import { courses, userProgress } from '@/db/schema'
 import { Card } from './card'
+import { useRouter } from 'next/navigation'
+import { useTransition } from 'react'
+import { upsertUserProgress } from '@/actions/user-progress'
+import { toast } from 'sonner'
 
 interface ListProps {
   courses: (typeof courses.$inferSelect)[]
-  activeCourseId: number
+  activeCourseId?: typeof userProgress.$inferSelect.activeCourseId
 }
 
 export function List({ courses, activeCourseId }: ListProps) {
+  const router = useRouter()
+  const [pending, startTransition] = useTransition()
+
+  function onClick(id: number) {
+    if (pending) return null
+
+    if (id === activeCourseId) {
+      return router.push('/learn')
+    }
+
+    startTransition(() => {
+      upsertUserProgress(id).catch(() => {
+        toast.error('Something went wrong.')
+      })
+    })
+  }
+
   return (
     <div className="grid grid-cols-2 gap-4 pt-6 lg:grid-cols-[repeat(auto-fill,minmax(210px,1fr))]">
       {courses.map((course) => (
@@ -17,8 +38,8 @@ export function List({ courses, activeCourseId }: ListProps) {
           id={course.id}
           title={course.title}
           imageSrc={course.imageSrc}
-          onClick={() => {}}
-          disabled={false}
+          onClick={onClick}
+          disabled={pending}
           active={course.id === activeCourseId}
         />
       ))}
