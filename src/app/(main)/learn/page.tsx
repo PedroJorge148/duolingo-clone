@@ -12,7 +12,7 @@ import { Header } from './header'
 import { Unit } from './unit'
 import { lessons, units as unitsSchema } from '@/db/schema'
 
-export default async function Learn() {
+export default async function LearnPage() {
   const userProgressData = getUserProgress()
   const couseProgressData = getCourseProgress()
   const lessonPercentageData = getLessonPercentage()
