@@ -94,11 +94,24 @@ async function main() {
         question: 'Which one of these is the "the man"?',
         order: 1,
       },
+      {
+        id: 2,
+        lessonId: 1, // Nouns
+        type: 'ASSIST',
+        question: 'the man',
+        order: 2,
+      },
+      {
+        id: 3,
+        lessonId: 1, // Nouns
+        type: 'SELECT',
+        question: 'Which one of these is the "the robot"?',
+        order: 3,
+      },
     ])
 
     await db.insert(schema.challengesOptions).values([
       {
-        id: 1,
         challengeId: 1, // Which one of these is the "the man"?
         imageSrc: '/man.svg',
         correct: true,
@@ -106,16 +119,59 @@ async function main() {
         audioSrc: '/es_man.mp3',
       },
       {
-        id: 2,
         challengeId: 1, // Which one of these is the "the man"?
         imageSrc: '/woman.svg',
-        correct: true,
+        correct: false,
         text: 'la mujer',
         audioSrc: '/es_woman.mp3',
       },
       {
-        id: 3,
         challengeId: 1, // Which one of these is the "the man"?
+        imageSrc: '/robot.svg',
+        correct: false,
+        text: 'el robot',
+        audioSrc: '/es_robot.mp3',
+      },
+    ])
+
+    await db.insert(schema.challengesOptions).values([
+      {
+        challengeId: 2, // 'the man'
+        correct: true,
+        text: 'el hombre',
+        audioSrc: '/es_man.mp3',
+      },
+      {
+        challengeId: 2, // 'the man'
+        correct: false,
+        text: 'la mujer',
+        audioSrc: '/es_woman.mp3',
+      },
+      {
+        challengeId: 2, // 'the man'
+        correct: false,
+        text: 'el robot',
+        audioSrc: '/es_robot.mp3',
+      },
+    ])
+
+    await db.insert(schema.challengesOptions).values([
+      {
+        challengeId: 3, // Which one of these is the "the robot"?
+        imageSrc: '/man.svg',
+        correct: false,
+        text: 'el hombre',
+        audioSrc: '/es_man.mp3',
+      },
+      {
+        challengeId: 3, // Which one of these is the "the robot"?
+        imageSrc: '/woman.svg',
+        correct: false,
+        text: 'la mujer',
+        audioSrc: '/es_woman.mp3',
+      },
+      {
+        challengeId: 3, // Which one of these is the "the robot"?
         imageSrc: '/robot.svg',
         correct: true,
         text: 'el robot',
