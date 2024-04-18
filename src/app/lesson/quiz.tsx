@@ -8,6 +8,7 @@ import { Challenge } from './challenge'
 import { Footer } from './footer'
 import { toast } from 'sonner'
 import { upsertChallengeProgress } from '@/actions/challenge-progress'
+import { reduceHearts } from '@/actions/user-progress'
 
 interface QuizProps {
   initialLessonId: number
@@ -89,6 +90,23 @@ export function Quiz({
             // This is a practice
             if (initialPercentage === 100) {
               setHearts((prev) => Math.min(prev + 1, 5))
+            }
+          })
+          .catch(() => toast.error('Something went wrong. Please try again.'))
+      })
+    } else {
+      startTransition(() => {
+        reduceHearts(challenge.id)
+          .then((response) => {
+            if (response?.error === 'hearts') {
+              console.error('Missing hearts')
+              return null
+            }
+
+            setStatus('wrong')
+
+            if (!response?.error) {
+              setHearts((prev) => Math.max(prev - 1, 0))
             }
           })
           .catch(() => toast.error('Something went wrong. Please try again.'))
