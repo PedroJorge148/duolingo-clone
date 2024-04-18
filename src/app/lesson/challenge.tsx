@@ -1,9 +1,9 @@
-import { challenges, challengesOptions } from '@/db/schema'
+import { challenges, challengeOptions } from '@/db/schema'
 import { cn } from '@/lib/utils'
 import { Card } from './card'
 
 interface ChallengeProps {
-  options: (typeof challengesOptions.$inferSelect)[]
+  options: (typeof challengeOptions.$inferSelect)[]
   onSelect: (id: number) => void
   status: 'correct' | 'wrong' | 'none'
   selectedOption?: number

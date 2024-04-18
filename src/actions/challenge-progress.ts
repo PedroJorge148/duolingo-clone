@@ -1,6 +1,8 @@
+'use server'
+
 import { db } from '@/db/drizzle'
 import { getUserProgress } from '@/db/queries'
-import { challengesProgress, userProgress } from '@/db/schema'
+import { challengeProgress, userProgress } from '@/db/schema'
 import { auth } from '@clerk/nextjs'
 import { and, eq } from 'drizzle-orm'
 import { revalidatePath } from 'next/cache'
@@ -31,14 +33,12 @@ export async function upsertChallengeProgress(challengeId: number) {
 
   const lessonId = challenge.lessonId
 
-  const existingChallengeProgress = await db.query.challengesProgress.findFirst(
-    {
-      where: and(
-        eq(challengesProgress.userId, userId),
-        eq(challengesProgress.challengeId, challengeId),
-      ),
-    },
-  )
+  const existingChallengeProgress = await db.query.challengeProgress.findFirst({
+    where: and(
+      eq(challengeProgress.userId, userId),
+      eq(challengeProgress.challengeId, challengeId),
+    ),
+  })
 
   const isPractice = !!existingChallengeProgress
 
@@ -49,11 +49,11 @@ export async function upsertChallengeProgress(challengeId: number) {
 
   if (isPractice) {
     await db
-      .update(challengesProgress)
+      .update(challengeProgress)
       .set({
         completed: true,
       })
-      .where(eq(challengesProgress.id, existingChallengeProgress.id))
+      .where(eq(challengeProgress.id, existingChallengeProgress.id))
 
     await db
       .update(userProgress)
@@ -72,7 +72,7 @@ export async function upsertChallengeProgress(challengeId: number) {
     return null
   }
 
-  await db.insert(challengesProgress).values({
+  await db.insert(challengeProgress).values({
     challengeId,
     userId,
     completed: true,
@@ -84,4 +84,10 @@ export async function upsertChallengeProgress(challengeId: number) {
       points: currentUserProgress.points + 10,
     })
     .where(eq(userProgress.userId, userId))
+
+  revalidatePath('/learn')
+  revalidatePath('/lesson')
+  revalidatePath('/quests')
+  revalidatePath('/leaderboard')
+  revalidatePath(`/lesson/${lessonId}`)
 }
