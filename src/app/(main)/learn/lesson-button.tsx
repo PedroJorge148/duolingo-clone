@@ -39,7 +39,7 @@ export function LessonButton(props: LessonButtonProps) {
 
   const Icon = isCompleted ? Check : isLast ? Crown : Star
 
-  const href = isCompleted ? `/lessons/${props.id}` : '/lesson'
+  const href = isCompleted ? `/lesson/${props.id}` : '/lesson'
 
   return (
     <Link

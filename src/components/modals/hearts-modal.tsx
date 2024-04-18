@@ -1,6 +1,6 @@
 'use client'
 
-import { useExitModal } from '@/store/use-exit-modal'
+import { useHeartsModal } from '@/store/use-hearts-modal'
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
@@ -14,12 +14,17 @@ import {
 } from '../ui/dialog'
 import { Button } from '../ui/button'
 
-export function ExitModal() {
+export function HeartsModal() {
   const router = useRouter()
   const [isClient, setIsClient] = useState(false)
-  const { isOpen, close } = useExitModal()
+  const { isOpen, close } = useHeartsModal()
 
   useEffect(() => setIsClient(true), [])
+
+  function onClick() {
+    close()
+    router.push('/store')
+  }
 
   if (!isClient) {
     return null
@@ -30,13 +35,13 @@ export function ExitModal() {
       <DialogContent>
         <DialogHeader>
           <div className="mb-5 flex w-full items-center justify-center">
-            <Image src="/mascot_sad.svg" alt="mascot" height={80} width={80} />
+            <Image src="/mascot_bad.svg" alt="mascot" height={80} width={80} />
           </div>
           <DialogTitle className="text-center text-2xl font-bold">
-            Wait, don&apos;t go!
+            You ran out of hearts!
           </DialogTitle>
           <DialogDescription className="text-center text-base">
-            You&apos;re about to leave the lesson. Are you sure?
+            Get Pro for unlimited hearts, or purchase them in the store.
           </DialogDescription>
         </DialogHeader>
         <DialogFooter className="mb-4">
@@ -45,20 +50,20 @@ export function ExitModal() {
               variant="primary"
               className="w-full"
               size="lg"
-              onClick={close}
+              onClick={onClick}
             >
-              Keep Learning
+              Get unlimited hearts
             </Button>
             <Button
-              variant="dangerOutline"
+              variant="primaryOutline"
               className="w-full"
               size="lg"
               onClick={() => {
                 close()
-                router.push('/learn')
+                router.push('learn')
               }}
             >
-              End session
+              No thanks
             </Button>
           </div>
         </DialogFooter>
