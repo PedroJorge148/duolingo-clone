@@ -7,7 +7,7 @@ interface FooterProps {
   onCheck: () => void
   status: 'correct' | 'wrong' | 'none' | 'completed'
   disabled?: boolean
-  lessonId?: boolean
+  lessonId?: number
 }
 
 export function Footer({ onCheck, status, disabled, lessonId }: FooterProps) {

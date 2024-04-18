@@ -12,7 +12,7 @@ export default async function LessonPage() {
   ])
 
   if (!lesson || !userProgress) {
-    redirect('/courses')
+    redirect('/learn')
   }
 
   const initialPercentage =
@@ -26,7 +26,7 @@ export default async function LessonPage() {
       initialLessonChallenges={lesson.challenges}
       initialHearts={userProgress.hearts}
       initialPercentage={initialPercentage}
-      userSubscription={undefined}
+      userSubscription={null}
     />
   )
 }

@@ -3,6 +3,8 @@
 import { useAudio } from 'react-use'
 import { toast } from 'sonner'
 import { useState, useTransition } from 'react'
+import { useRouter } from 'next/navigation'
+import Image from 'next/image'
 
 import { challenges, challengeOptions } from '@/db/schema'
 import { upsertChallengeProgress } from '@/actions/challenge-progress'
@@ -12,6 +14,7 @@ import { Header } from './header'
 import { QuestionBubble } from './question-bubble'
 import { Challenge } from './challenge'
 import { Footer } from './footer'
+import { ResultCard } from './result-card'
 
 interface QuizProps {
   initialLessonId: number
@@ -31,15 +34,17 @@ export function Quiz({
   initialLessonChallenges,
   userSubscription,
 }: QuizProps) {
+  const router = useRouter()
+
   const [correctAudio, _c, correctControls] = useAudio({ src: '/correct.wav' })
   const [incorrectAudio, _i, incorrectControls] = useAudio({
     src: '/incorrect.wav',
   })
   const [pending, startTransition] = useTransition()
 
+  const [lessonId] = useState(initialLessonId)
   const [hearts, setHearts] = useState(initialHearts)
   const [percentage, setPercentage] = useState(initialPercentage)
-
   const [challenges] = useState(initialLessonChallenges)
 
   const [activeIndex, setActiveIndex] = useState(() => {
@@ -51,6 +56,9 @@ export function Quiz({
 
   const [selectedOption, setSelectedOption] = useState<number>()
   const [status, setStatus] = useState<'correct' | 'wrong' | 'none'>('none')
+
+  const challenge = challenges[activeIndex]
+  const options = challenge?.challengeOptions ?? []
 
   const onNext = () => {
     setActiveIndex((current) => current + 1)
@@ -123,8 +131,41 @@ export function Quiz({
     }
   }
 
-  const challenge = challenges[activeIndex]
-  const options = challenge?.challengeOptions ?? []
+  if (true || !challenge) {
+    return (
+      <>
+        <div className="mx-auto flex h-full max-w-lg flex-col items-center justify-center gap-4 text-center lg:gap-8">
+          <Image
+            src="/finish.svg"
+            alt="Finish"
+            height={100}
+            width={100}
+            className="hidden lg:block"
+          />
+          <Image
+            src="/finish.svg"
+            alt="Finish"
+            height={50}
+            width={50}
+            className="block lg:hidden"
+          />
+          <h1 className="text-lg font-bold text-neutral-700 lg:text-3xl">
+            Great job!
+            <br /> You&apos;ve completed the lesson.
+          </h1>
+          <div className="flex w-full items-center gap-4">
+            <ResultCard variant="points" value={challenges.length * 10} />
+            <ResultCard variant="hearts" value={hearts} />
+          </div>
+        </div>
+        <Footer
+          lessonId={lessonId}
+          status="completed"
+          onCheck={() => router.push('learn')}
+        />
+      </>
+    )
+  }
 
   const title =
     challenge.type === 'ASSIST'
