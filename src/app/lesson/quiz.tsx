@@ -1,14 +1,17 @@
 'use client'
 
-import { challenges, challengeOptions } from '@/db/schema'
+import { useAudio } from 'react-use'
+import { toast } from 'sonner'
 import { useState, useTransition } from 'react'
+
+import { challenges, challengeOptions } from '@/db/schema'
+import { upsertChallengeProgress } from '@/actions/challenge-progress'
+import { reduceHearts } from '@/actions/user-progress'
+
 import { Header } from './header'
 import { QuestionBubble } from './question-bubble'
 import { Challenge } from './challenge'
 import { Footer } from './footer'
-import { toast } from 'sonner'
-import { upsertChallengeProgress } from '@/actions/challenge-progress'
-import { reduceHearts } from '@/actions/user-progress'
 
 interface QuizProps {
   initialLessonId: number
@@ -28,6 +31,10 @@ export function Quiz({
   initialLessonChallenges,
   userSubscription,
 }: QuizProps) {
+  const [correctAudio, _c, correctControls] = useAudio({ src: '/correct.wav' })
+  const [incorrectAudio, _i, incorrectControls] = useAudio({
+    src: '/incorrect.wav',
+  })
   const [pending, startTransition] = useTransition()
 
   const [hearts, setHearts] = useState(initialHearts)
@@ -84,6 +91,7 @@ export function Quiz({
               return
             }
 
+            correctControls.play()
             setStatus('correct')
             setPercentage((prev) => prev + 100 / challenges.length)
 
@@ -103,6 +111,7 @@ export function Quiz({
               return null
             }
 
+            incorrectControls.play()
             setStatus('wrong')
 
             if (!response?.error) {
@@ -124,6 +133,8 @@ export function Quiz({
 
   return (
     <>
+      {correctAudio}
+      {incorrectAudio}
       <Header
         hearts={hearts}
         percentage={percentage}
