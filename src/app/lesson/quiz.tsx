@@ -1,10 +1,11 @@
 'use client'
 
-import { useAudio } from 'react-use'
+import Image from 'next/image'
+import Confetti from 'react-confetti'
+import { useAudio, useWindowSize } from 'react-use'
 import { toast } from 'sonner'
 import { useState, useTransition } from 'react'
 import { useRouter } from 'next/navigation'
-import Image from 'next/image'
 
 import { challenges, challengeOptions } from '@/db/schema'
 import { upsertChallengeProgress } from '@/actions/challenge-progress'
@@ -34,8 +35,14 @@ export function Quiz({
   initialLessonChallenges,
   userSubscription,
 }: QuizProps) {
+  const { width, height } = useWindowSize()
+
   const router = useRouter()
 
+  const [finishAudio] = useAudio({
+    src: '/finish.mp3',
+    autoPlay: true,
+  })
   const [correctAudio, _c, correctControls] = useAudio({ src: '/correct.wav' })
   const [incorrectAudio, _i, incorrectControls] = useAudio({
     src: '/incorrect.wav',
@@ -131,9 +138,17 @@ export function Quiz({
     }
   }
 
-  if (true || !challenge) {
+  if (!challenge) {
     return (
       <>
+        {finishAudio}
+        <Confetti
+          width={width}
+          height={height}
+          recycle={false}
+          numberOfPieces={500}
+          tweenDuration={1000}
+        />
         <div className="mx-auto flex h-full max-w-lg flex-col items-center justify-center gap-4 text-center lg:gap-8">
           <Image
             src="/finish.svg"
