@@ -11,7 +11,7 @@ import {
 import Image from 'next/image'
 import { redirect } from 'next/navigation'
 
-export default async function Leaderboard() {
+export default async function LeaderboardPage() {
   const userProgressData = getUserProgress()
   const userSubscriptionData = getUserSubscription()
   const leaderboardData = getTopTenUsers()

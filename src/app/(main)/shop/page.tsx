@@ -6,7 +6,7 @@ import Image from 'next/image'
 import { redirect } from 'next/navigation'
 import { Items } from './items'
 
-export default async function Shop() {
+export default async function ShopPage() {
   const userProgressData = getUserProgress()
   const userSubscriptionData = getUserSubscription()
 
