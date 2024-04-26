@@ -6,6 +6,7 @@ import {
   getLessonPercentage,
   getUnits,
   getUserProgress,
+  getUserSubscription,
 } from '@/db/queries'
 import { redirect } from 'next/navigation'
 import { Header } from './header'
@@ -13,18 +14,25 @@ import { Unit } from './unit'
 import { lessons, units as unitsSchema } from '@/db/schema'
 
 export default async function LearnPage() {
-  const userProgressData = getUserProgress()
-  const couseProgressData = getCourseProgress()
-  const lessonPercentageData = getLessonPercentage()
   const unitsData = getUnits()
+  const userProgressData = getUserProgress()
+  const courseProgressData = getCourseProgress()
+  const userSubscriptionData = getUserSubscription()
+  const lessonPercentageData = getLessonPercentage()
 
-  const [userProgress, courseProgress, lessonPercentage, units] =
-    await Promise.all([
-      userProgressData,
-      couseProgressData,
-      lessonPercentageData,
-      unitsData,
-    ])
+  const [
+    userProgress,
+    courseProgress,
+    lessonPercentage,
+    userSubscription,
+    units,
+  ] = await Promise.all([
+    userProgressData,
+    courseProgressData,
+    lessonPercentageData,
+    userSubscriptionData,
+    unitsData,
+  ])
 
   if (!userProgress || !userProgress.activeCourse) {
     redirect('/courses')
@@ -34,6 +42,8 @@ export default async function LearnPage() {
     redirect('/courses')
   }
 
+  const isPro = !!userSubscription?.isActive
+
   return (
     <div className="flex flex-row-reverse gap-12 px-6">
       <StickyWrapper>
@@ -41,7 +51,7 @@ export default async function LearnPage() {
           activeCourse={userProgress?.activeCourse}
           hearts={userProgress.hearts}
           points={userProgress.points}
-          hasActiveSubscription={false}
+          hasActiveSubscription={isPro}
         />
       </StickyWrapper>
       <FeedWrapper>

@@ -7,7 +7,7 @@ import { useRouter } from 'next/navigation'
 import { useState, useTransition } from 'react'
 import { useAudio, useWindowSize, useMount } from 'react-use'
 
-import { challenges, challengeOptions } from '@/db/schema'
+import { challenges, challengeOptions, userSubscription } from '@/db/schema'
 import { upsertChallengeProgress } from '@/actions/challenge-progress'
 import { reduceHearts } from '@/actions/user-progress'
 import { useHeartsModal } from '@/store/use-hearts-modal'
@@ -27,7 +27,11 @@ interface QuizProps {
   })[]
   initialHearts: number
   initialPercentage: number
-  userSubscription: any // TODO: Replace with subscription DB type
+  userSubscription:
+    | (typeof userSubscription.$inferSelect & {
+        isActive: boolean
+      })
+    | null
 }
 
 export function Quiz({
