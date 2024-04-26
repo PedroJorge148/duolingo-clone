@@ -1,6 +1,3 @@
-import { FeedWrapper } from '@/components/feed-wrapper'
-import { StickyWrapper } from '@/components/sticky-wrapper'
-import { UserProgress } from '@/components/user-progress'
 import {
   getCourseProgress,
   getLessonPercentage,
@@ -8,10 +5,15 @@ import {
   getUserProgress,
   getUserSubscription,
 } from '@/db/queries'
+import { Promo } from '@/components/promo'
+import { FeedWrapper } from '@/components/feed-wrapper'
+import { UserProgress } from '@/components/user-progress'
+import { StickyWrapper } from '@/components/sticky-wrapper'
 import { redirect } from 'next/navigation'
 import { Header } from './header'
 import { Unit } from './unit'
 import { lessons, units as unitsSchema } from '@/db/schema'
+import { Quests } from '@/components/quests'
 
 export default async function LearnPage() {
   const unitsData = getUnits()
@@ -53,6 +55,8 @@ export default async function LearnPage() {
           points={userProgress.points}
           hasActiveSubscription={isPro}
         />
+        {!isPro && <Promo />}
+        <Quests points={userProgress.points} />
       </StickyWrapper>
       <FeedWrapper>
         <Header title={userProgress?.activeCourse?.title} />
